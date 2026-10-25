@@ -4,228 +4,196 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Liam 的工具箱</title>
-<meta name="description" content="Liam 用 AI 做的小工具：照片去背與影片處理、動物直播地圖、迷因短片、3D 漫遊。">
-<meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0d0f12" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Liam 用 AI 做的小工具：影像與影片、辦公效率、探索與娛樂、3D 場景。">
+<meta name="theme-color" content="#14161b">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-title" content="工具箱">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@900&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-/* Layout: a quiet gallery — big serif masthead, then a 2-up grid of tool cards, each with its own drawn cover */
+/* Layout: a launcher — dark masthead with greeting and search, then category sections of compact tool rows */
 :root{
-  --bg:#eceef1; --card:#ffffff; --ink:#101318; --muted:#5d6470; --line:#d8dce2; --soft:#f5f6f8;
-  --accent:#2f4bd6; --accent-ink:#ffffff;
-  --c1:#e7e2f7; --c1i:#5b45c2;   /* image tools: violet */
-  --c2:#f8e7cf; --c2i:#b4660f;   /* meme: amber */
-  --c3:#d5ece7; --c3i:#13756a;   /* wildcams: teal */
-  --c4:#dfe3ea; --c4i:#3c4a60;   /* 3d: slate */
-  --c5:#dbe7f8; --c5i:#22589e;   /* office: blue */
-  --c6:#f6dfe4; --c6i:#a8344f;   /* flow: rose */
-  --live:#e5483a;
+  --bg:#f1f2f4; --card:#ffffff; --ink:#14161b; --muted:#646b77; --line:#e1e4e9; --hover:#f4f5f7;
+  --head:#14161b; --head-ink:#f3f4f6; --head-muted:#9097a3; --head-line:#2a2e36;
+  --accent:#ff7a45;
+  --c1:#7c5cff; --c2:#e8951f; --c3:#14a085; --c4:#64748b; --c5:#2f7be5; --c6:#e0507a;
   --f-display:"Noto Serif TC","Songti TC",serif;
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root{
-  --bg:#0d0f12; --card:#16191e; --ink:#eef0f3; --muted:#9aa2ae; --line:#272b32; --soft:#1c2026;
-  --accent:#8fa2ff; --accent-ink:#0b1030;
-  --c1:#26213a; --c1i:#b7a8ff;
-  --c2:#352a1b; --c2i:#f2b465;
-  --c3:#16302c; --c3i:#6fd3c1;
-  --c4:#20262f; --c4i:#a9b6ca;
-  --c5:#172538; --c5i:#8db8f2;
-  --c6:#341b22; --c6i:#f29bb0;
-  --live:#ff6b5e; color-scheme:dark}}
+  --bg:#0e1013; --card:#171a1f; --ink:#eef0f3; --muted:#9aa1ad; --line:#252930; --hover:#1f232a;
+  --head:#08090b; --head-line:#1f232a;
+  --c1:#a08bff; --c2:#f5b453; --c3:#3fc8ad; --c4:#9aa8bc; --c5:#6ea6f5; --c6:#f07c9c;
+  color-scheme:dark}}
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--f-body);-webkit-font-smoothing:antialiased;
-  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.wrap{max-width:1080px;margin:0 auto;padding-block:clamp(40px,8vw,88px) 64px;
-  padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--f-body);-webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom,0px)}
+.in{max-width:1040px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
 
 /* masthead */
-.mast{display:grid;gap:18px;margin-bottom:clamp(36px,6vw,64px)}
-.who{display:flex;align-items:center;gap:10px;font:500 12px/1 var(--f-mono);letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
-.who i{width:28px;height:1px;background:currentColor;display:block}
-h1{margin:0;font-family:var(--f-display);font-weight:900;font-size:clamp(40px,9vw,84px);line-height:1.08;letter-spacing:.01em;text-wrap:balance}
-h1 em{font-style:normal;color:var(--accent)}
-.nb{white-space:nowrap}
-@media (max-width:420px){h1{font-size:clamp(32px,10.2vw,44px)}}
-.lede{margin:0;max-width:30em;color:var(--muted);font-size:clamp(15px,2.2vw,17px)}
-.stats{display:flex;flex-wrap:wrap;gap:8px 22px;font:500 12px/1.4 var(--f-mono);letter-spacing:.06em;color:var(--muted)}
-.stats b{color:var(--ink);font-weight:500}
+.head{background:var(--head);color:var(--head-ink);padding-top:env(safe-area-inset-top,0px);position:relative;overflow:hidden}
+.head::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background-image:linear-gradient(var(--head-line) 1px,transparent 1px),linear-gradient(90deg,var(--head-line) 1px,transparent 1px);
+  background-size:32px 32px;mask-image:linear-gradient(180deg,#000,transparent 95%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 95%)}
+.head .in{position:relative;padding-block:clamp(26px,6vw,52px) clamp(22px,5vw,38px);display:flex;flex-direction:column;gap:14px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;font:500 12px/1 var(--f-mono);letter-spacing:.14em;color:var(--head-muted);text-transform:uppercase}
+.top a{color:inherit;text-decoration:none}
+.top a:hover{color:var(--head-ink)}
+.clock{font-variant-numeric:tabular-nums;letter-spacing:.06em}
+h1{margin:6px 0 0;font-family:var(--f-display);font-weight:900;font-size:clamp(30px,6.4vw,52px);line-height:1.15;letter-spacing:.01em}
+h1 .dot{color:var(--accent)}
+.sub{margin:0;color:var(--head-muted);max-width:34em}
+.search{margin-top:6px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid var(--head-line);border-radius:12px;padding:0 14px;max-width:520px}
+.search:focus-within{border-color:var(--accent)}
+.search svg{flex:none;width:18px;height:18px;color:var(--head-muted)}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--head-ink);font:inherit;padding:12px 0;outline:none}
+.search input::placeholder{color:var(--head-muted)}
+.search kbd{font:500 11px/1 var(--f-mono);color:var(--head-muted);border:1px solid var(--head-line);border-radius:5px;padding:4px 6px}
+@media (pointer:coarse){.search kbd{display:none}}
+.jump{display:flex;flex-wrap:wrap;gap:8px}
+.jump a{font-size:13px;color:var(--head-ink);text-decoration:none;border:1px solid var(--head-line);border-radius:999px;padding:5px 12px;display:inline-flex;align-items:center;gap:7px}
+.jump a:hover{border-color:var(--head-muted)}
+.jump i{width:7px;height:7px;border-radius:50%;background:var(--k)}
+.jump a:focus-visible,.search input:focus-visible{outline:none}
+.jump a:focus-visible{border-color:var(--accent)}
 
-/* grid */
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.4vw,28px)}
-@media (max-width:720px){.grid{grid-template-columns:minmax(0,1fr)}}
-.tool{--c:var(--c4);--ci:var(--c4i);position:relative;display:flex;flex-direction:column;background:var(--card);border-radius:22px;overflow:hidden;
-  text-decoration:none;color:inherit;border:1px solid var(--line);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
-.tool:hover{transform:translateY(-4px);box-shadow:0 22px 40px -24px rgba(16,19,24,.45)}
-.tool:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-.cover{position:relative;aspect-ratio:16/10;background:var(--c);color:var(--ci);overflow:hidden}
-.cover svg{position:absolute;inset:0;width:100%;height:100%}
-.badge{position:absolute;top:16px;left:16px;font:500 11px/1 var(--f-mono);letter-spacing:.08em;padding:7px 10px;border-radius:999px;background:var(--card);color:var(--ink)}
-.badge.live{display:flex;align-items:center;gap:6px}
-.badge.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--live);animation:pulse 1.6s ease-in-out infinite}
-@keyframes pulse{50%{opacity:.25}}
-.body{display:flex;flex-direction:column;gap:10px;padding:22px 24px 24px;flex:1}
-.body h2{margin:0;font-family:var(--f-display);font-weight:900;font-size:clamp(22px,3vw,28px);line-height:1.25}
-.body p{margin:0;color:var(--muted);font-size:15px;max-width:34em}
-.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:10px}
-.tags{display:flex;flex-wrap:wrap;gap:6px}
-.tags span{font-size:12px;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--muted)}
-.go{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:var(--bg);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
-.tool:hover .go{transform:translateX(3px) rotate(-45deg)}
-.go svg{width:18px;height:18px}
+/* sections */
+main{padding-block:clamp(24px,4vw,40px) 24px;display:flex;flex-direction:column;gap:clamp(26px,4vw,40px)}
+.cat{display:flex;flex-direction:column;gap:12px;scroll-margin-top:16px}
+.cat-h{display:flex;align-items:baseline;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.cat-h h2{margin:0;font-size:17px;font-weight:700;white-space:nowrap}
+.cat-h p{margin:0;color:var(--muted);font-size:13px;flex:1;min-width:0}
+.cat-h span{font:500 12px/1 var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:10px}
 
-.tool.c1{--c:var(--c1);--ci:var(--c1i)} .tool.c2{--c:var(--c2);--ci:var(--c2i)}
-.tool.c3{--c:var(--c3);--ci:var(--c3i)} .tool.c4{--c:var(--c4);--ci:var(--c4i)}
-.tool.c5{--c:var(--c5);--ci:var(--c5i)} .tool.c6{--c:var(--c6);--ci:var(--c6i)}
+.tool{--k:var(--c4);display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;column-gap:14px;row-gap:10px;padding:14px;
+  background:var(--card);border:1px solid var(--line);border-radius:14px;text-decoration:none;color:inherit;
+  transition:border-color .2s,transform .2s}
+.tool:hover{border-color:var(--k);transform:translateY(-1px)}
+.tool:focus-visible{outline:2px solid var(--k);outline-offset:2px}
+.ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#fff;background:var(--k);box-shadow:inset 0 -2px 0 rgba(0,0,0,.14)}
+@media (prefers-color-scheme: dark){.ico{color:#0e1013}}
+.ico svg{width:22px;height:22px}
+.txt{min-width:0;display:flex;flex-direction:column}
+.name{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;line-height:1.35;flex-wrap:wrap}
+.name small{font:500 10.5px/1 var(--f-mono);letter-spacing:.04em;color:var(--k);border:1px solid currentColor;border-radius:999px;padding:3px 7px;white-space:nowrap}
+.desc{margin-top:2px;color:var(--muted);font-size:13.5px;line-height:1.5}
+.go{color:var(--muted);transition:transform .2s,color .2s}
+.go svg{width:18px;height:18px;display:block}
+.tool:hover .go{color:var(--k);transform:translateX(3px)}
+.subs{grid-column:2 / -1;display:flex;flex-wrap:wrap;gap:6px}
+.subs span{font-size:12px;color:var(--muted);background:var(--hover);border-radius:6px;padding:2px 8px}
+mark{background:color-mix(in srgb,var(--accent) 30%,transparent);color:inherit;border-radius:3px}
+.none{color:var(--muted);margin:0}
 
-footer{margin-top:clamp(48px,7vw,80px);padding-top:22px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;
-  color:var(--muted);font-size:13px}
+footer{border-top:1px solid var(--line)}
+footer .in{padding-block:20px 32px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;color:var(--muted);font-size:13px}
 footer a{color:inherit;text-underline-offset:3px}
-@media (prefers-reduced-motion:reduce){.tool,.go{transition:none}.badge.live::before{animation:none}}
+@media (prefers-reduced-motion:reduce){.tool,.go{transition:none}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="mast">
-    <div class="who"><i></i>Liam Chiu · Toolbox</div>
-    <h1><span class="nb">把想法，</span><br><span class="nb">做成<em>能用</em>的小工具。</span></h1>
-    <p class="lede">這裡收著我用 AI 做的工具。點卡片就能直接用，照片和影片都在你自己的裝置上處理，不會上傳。</p>
-    <div class="stats" id="stats"></div>
-  </header>
+<header class="head">
+  <div class="in">
+    <div class="top"><a href="https://github.com/mmllpp772">Liam Chiu · Toolbox</a><span class="clock" id="clock"></span></div>
+    <h1 id="greet">晚安，Liam<span class="dot">.</span></h1>
+    <p class="sub">我用 AI 做的小工具都在這裡。免安裝，照片、影片和檔案都在你自己的裝置上處理。</p>
+    <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input id="q" type="search" placeholder="找工具：去背、PDF、流程圖、GIF…" aria-label="搜尋工具" autocomplete="off"><kbd>/</kbd></label>
+    <nav class="jump" id="jump" aria-label="分類"></nav>
+  </div>
+</header>
 
-  <main class="grid" id="grid"></main>
+<main class="in" id="main"></main>
 
-  <footer>
-    <span>持續更新中，做了新工具就掛上來。</span>
-    <a href="https://github.com/mmllpp772">github.com/mmllpp772</a>
-  </footer>
-</div>
+<footer><div class="in"><span>做了新工具就掛上來。</span><a href="https://github.com/mmllpp772">github.com/mmllpp772</a></div></footer>
 
 <script>
-// ---- 工具清單：新增工具就在這裡加一筆 ----
+// ---- 分類 ----
+const CATS = [
+  { id: "media",  name: "影像與影片", note: "去背、馬賽克、轉 GIF、壓縮", color: "c1" },
+  { id: "office", name: "辦公效率",   note: "PDF、QR 碼、流程圖",       color: "c5" },
+  { id: "fun",    name: "探索與娛樂", note: "看直播、做迷因",           color: "c3" },
+  { id: "3d",     name: "3D 場景",   note: "可以走進去逛的 3D 空間",   color: "c4" },
+];
+// ---- 工具：加一筆就會出現在對應分類 ----
 const TOOLS = [
-  { name: "影像工作台", repo: "image-tools", cover: "cutout", color: "c1",
-    desc: "照片 AI 去背、影片臉部追蹤馬賽克、影片轉 GIF、GoPro 影片瘦身，四個工具在同一頁。",
-    tags: ["去背", "馬賽克", "GIF", "影片壓縮"], badge: "四合一" },
-  { name: "流程繪", repo: "flowforge", cover: "flow", color: "c6",
-    desc: "拖拉式畫流程圖：新增節點、拉連線、調整樣式與對齊，規劃或說明流程一次搞定。",
-    tags: ["流程圖", "拖拉", "離線"] },
-  { name: "辦公工具箱", repo: "office-tools", cover: "office", color: "c5",
-    desc: "PDF 合併、分割、浮水印、轉圖片，加上 QR 碼與條碼產生器，檔案都不上傳。",
-    tags: ["PDF", "QR", "條碼"], badge: "2 個工具" },
-  { name: "野生直播地圖", repo: "wildcams", cover: "globe", color: "c3",
-    desc: "全世界近 300 個動物直播的互動地圖，點地圖或清單就能看。",
-    tags: ["動物", "直播", "地圖"], badge: "LIVE", live: true },
-  { name: "喵股製片所", repo: "cat-stock-meme-studio", cover: "cat", color: "c2",
-    desc: "上傳股票截圖或影片，配上貓貓動態模板和配樂，做成迷因短影片。",
-    tags: ["迷因", "股票", "短影片"] },
-  { name: "廠區 3D 漫遊", repo: "zhubei-3d", cover: "iso", color: "c4",
-    desc: "內部版 3D 場景。內容已加密，打開後輸入密碼才看得到。",
-    tags: ["3D", "內部"], badge: "需要密碼" },
+  { cat: "media", name: "影像工作台", repo: "image-tools", icon: "cut", color: "c1", badge: "4 合 1",
+    desc: "照片 AI 去背、影片臉部馬賽克、影片轉 GIF、GoPro 影片瘦身。",
+    subs: ["照片去背", "臉部馬賽克", "影片轉 GIF", "影片瘦身"] },
+  { cat: "office", name: "辦公工具箱", repo: "office-tools", icon: "doc", color: "c5", badge: "2 合 1",
+    desc: "PDF 合併、分割、浮水印、轉圖片；QR 碼與條碼可批次排成標籤列印。",
+    subs: ["PDF 工具箱", "QR 條碼產生器"] },
+  { cat: "office", name: "流程繪", repo: "flowforge", icon: "flow", color: "c6",
+    desc: "拖拉式畫流程圖：新增節點、拉連線、調整樣式與對齊。", keys: "flowchart 流程圖" },
+  { cat: "fun", name: "野生直播地圖", repo: "wildcams", icon: "globe", color: "c3", badge: "LIVE",
+    desc: "全世界近 300 個動物直播的互動地圖，點地圖或清單就能看。" },
+  { cat: "fun", name: "喵股製片所", repo: "cat-stock-meme-studio", icon: "cat", color: "c2",
+    desc: "上傳股票截圖或影片，配上貓貓模板和配樂，做成迷因短影片。" },
+  { cat: "3d", name: "廠區 3D 漫遊", repo: "zhubei-3d", icon: "cube", color: "c4", badge: "需要密碼",
+    desc: "內部版 3D 場景。內容已加密，打開後輸入密碼才看得到。" },
 ];
 
-const COVERS = {
-  // transparent-checker board with a subject being cut out along a dashed path
-  cutout: `<svg viewBox="0 0 320 200" aria-hidden="true">
-    <defs><pattern id="ck" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="currentColor" opacity=".06"/><rect width="8" height="8" fill="currentColor" opacity=".12"/><rect x="8" y="8" width="8" height="8" fill="currentColor" opacity=".12"/></pattern></defs>
-    <rect x="150" y="0" width="170" height="200" fill="url(#ck)"/>
-    <path d="M160 200c0-46 18-70 40-80-14-8-22-22-22-40 0-26 20-44 44-44s44 18 44 44c0 18-8 32-22 40 22 10 40 34 40 80z" fill="currentColor" opacity=".9"/>
-    <path d="M60 200c0-46 18-70 40-80-14-8-22-22-22-40 0-26 20-44 44-44" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 7" opacity=".55"/>
-    <g transform="translate(118 26) rotate(28)" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="0" cy="0" r="7"/><circle cx="0" cy="22" r="7"/><path d="M5 5l24 22M5 17l24-22"/></g>
-  </svg>`,
-  // nodes and arrows
-  flow: `<svg viewBox="0 0 320 200" aria-hidden="true">
-    <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M112 64h40M196 64h0" opacity=".6"/><path d="M174 82v26M174 140v14M152 124h-34v-12" opacity=".6"/>
-      <path d="M148 60l6 4-6 4M170 104l4 6 4-6M114 116l4-6 4 6" opacity=".6"/>
-    </g>
-    <rect x="52" y="48" width="60" height="32" rx="16" fill="currentColor" opacity=".45"/>
-    <rect x="152" y="48" width="44" height="32" rx="6" fill="currentColor" opacity=".7"/>
-    <path d="M174 110l24 15-24 15-24-15z" fill="currentColor"/>
-    <rect x="88" y="80" width="58" height="30" rx="6" fill="currentColor" opacity=".35"/>
-    <rect x="148" y="154" width="52" height="26" rx="13" fill="currentColor" opacity=".55"/>
-    <path d="M226 64h40" stroke="currentColor" stroke-width="2.5" stroke-dasharray="4 6" stroke-linecap="round" opacity=".5"/>
-    <circle cx="276" cy="64" r="8" fill="currentColor" opacity=".5"/>
-  </svg>`,
-  // a document with a QR code stamped on it
-  office: `<svg viewBox="0 0 320 200" aria-hidden="true">
-    <g fill="var(--card)" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
-      <path d="M96 46h62l20 20v104H96z" transform="rotate(-6 137 108)" opacity=".6"/>
-      <path d="M120 34h64l22 22v112h-86z"/><path d="M184 34v22h22" fill="none"/>
-    </g>
-    <g stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".6"><path d="M134 76h50M134 92h50M134 108h30"/></g>
-    <g fill="currentColor" transform="translate(184 116)">
-      <rect width="56" height="56" rx="6" fill="currentColor"/>
-      <g fill="var(--c)"><path d="M6 6h16v16H6zM34 6h16v16H34zM6 34h16v16H6z"/></g>
-      <g fill="currentColor"><rect x="10" y="10" width="8" height="8"/><rect x="38" y="10" width="8" height="8"/><rect x="10" y="38" width="8" height="8"/></g>
-      <g fill="var(--c)"><rect x="30" y="30" width="6" height="6"/><rect x="40" y="36" width="6" height="6"/><rect x="32" y="44" width="6" height="6"/><rect x="44" y="46" width="6" height="6"/></g>
-    </g>
-  </svg>`,
-  // dotted globe with live pins
-  globe: `<svg viewBox="0 0 320 200" aria-hidden="true">
-    <g transform="translate(160 112)">
-      <circle r="78" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35"/>
-      <ellipse rx="78" ry="26" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".25"/>
-      <ellipse rx="78" ry="56" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".18"/>
-      <ellipse rx="30" ry="78" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".25"/>
-      <ellipse rx="60" ry="78" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".18"/>
-      <g fill="currentColor"><circle cx="-38" cy="-30" r="5"/><circle cx="22" cy="-48" r="5"/><circle cx="46" cy="8" r="5"/><circle cx="-12" cy="30" r="5"/><circle cx="-54" cy="18" r="5"/></g>
-      <g fill="none" stroke="currentColor" stroke-width="1.5" opacity=".5"><circle cx="22" cy="-48" r="11"/><circle cx="46" cy="8" r="11"/></g>
-    </g>
-  </svg>`,
-  // candlestick chart wearing cat ears
-  cat: `<svg viewBox="0 0 320 200" aria-hidden="true">
-    <g stroke="currentColor" stroke-width="2" opacity=".35"><path d="M40 170h240"/></g>
-    <g fill="currentColor">
-      <rect x="62" y="110" width="16" height="40" rx="2" opacity=".45"/><path d="M70 98v64" stroke="currentColor" stroke-width="2" opacity=".45"/>
-      <rect x="98" y="96" width="16" height="34" rx="2" opacity=".45"/><path d="M106 86v54" stroke="currentColor" stroke-width="2" opacity=".45"/>
-      <rect x="134" y="104" width="16" height="30" rx="2" opacity=".45"/><path d="M142 94v48" stroke="currentColor" stroke-width="2" opacity=".45"/>
-      <rect x="170" y="76" width="16" height="42" rx="2" opacity=".7"/><path d="M178 66v60" stroke="currentColor" stroke-width="2" opacity=".7"/>
-      <rect x="206" y="58" width="16" height="36" rx="2"/><path d="M214 48v54" stroke="currentColor" stroke-width="2"/>
-    </g>
-    <path d="M60 150 106 118 142 124 178 92 238 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <g transform="translate(238 48)" fill="currentColor"><circle r="22"/><path d="M-20 -8-16-34 0-18zM20 -8 16-34 0-18z"/></g>
-    <g transform="translate(238 48)" fill="var(--c)"><circle cx="-8" cy="-2" r="3"/><circle cx="8" cy="-2" r="3"/><path d="M-4 8h8l-4 4z"/></g>
-  </svg>`,
-  // isometric blocks with a padlock
-  iso: `<svg viewBox="0 0 320 200" aria-hidden="true">
-    <g stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
-      <path d="M110 140 150 120 190 140 150 160z" fill="currentColor" fill-opacity=".15"/>
-      <path d="M110 140v-56l40-20v56z" fill="currentColor" fill-opacity=".35"/>
-      <path d="M150 120V64l40 20v56z" fill="currentColor" fill-opacity=".55"/>
-      <path d="M110 84 150 64 190 84 150 104z" fill="currentColor" fill-opacity=".25"/>
-      <path d="M196 156v-30l26-13v30z" fill="currentColor" fill-opacity=".35"/>
-      <path d="M222 143v-30l26 13v30z" fill="currentColor" fill-opacity=".55"/>
-      <path d="M196 126 222 113 248 126 222 139z" fill="currentColor" fill-opacity=".25"/>
-      <path d="M70 146v-22l20-10v22z" fill="currentColor" fill-opacity=".35"/>
-      <path d="M90 136v-22l20 10v22z" fill="currentColor" fill-opacity=".55"/>
-    </g>
-    <g transform="translate(150 40)" fill="none" stroke="currentColor" stroke-width="3"><path d="M-9 0v-8a9 9 0 0 1 18 0v8"/><rect x="-13" y="0" width="26" height="20" rx="4" fill="currentColor"/></g>
-  </svg>`,
+const ICONS = {
+  cut:   '<path d="M8.1 7.9 20 20M8.1 16.1 20 4"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>',
+  doc:   '<path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 12h6M9 16h4"/>',
+  flow:  '<rect x="3" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="16" width="7" height="5" rx="1.5"/><path d="M6.5 8v4.5h11V16"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/>',
+  cat:   '<path d="M4 20V8l3-4 3 4h4l3-4 3 4v12z"/><path d="M9 13h.01M15 13h.01M11 16.5h2"/>',
+  cube:  '<path d="M12 3 20 7.5v9L12 21 4 16.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/>',
+  tool:  '<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5"/>',
 };
-const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+const svg = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const ARROW = svg('<path d="M5 12h14M13 6l6 6-6 6"/>');
 const USER = "mmllpp772";
+const url = t => t.url || `https://${USER}.github.io/${t.repo}/`;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const hl = (s, term) => { const e = esc(s); if (!term) return e; const i = e.toLowerCase().indexOf(term); return i < 0 ? e : e.slice(0, i) + "<mark>" + e.slice(i, i + term.length) + "</mark>" + e.slice(i + term.length); };
 
-document.getElementById("grid").innerHTML = TOOLS.map(t => `
-  <a class="tool ${t.color || ""}" href="${t.url || `https://${USER}.github.io/${t.repo}/`}">
-    <div class="cover">${COVERS[t.cover] || ""}${t.badge ? `<span class="badge${t.live ? " live" : ""}">${esc(t.badge)}</span>` : ""}</div>
-    <div class="body">
-      <h2>${esc(t.name)}</h2>
-      <p>${esc(t.desc)}</p>
-      <div class="foot"><div class="tags">${t.tags.map(g => `<span>${esc(g)}</span>`).join("")}</div><span class="go">${ARROW}</span></div>
-    </div>
-  </a>`).join("");
-document.getElementById("stats").innerHTML = `<span><b>${TOOLS.length}</b> 個工具</span><span>全部免安裝，打開就能用</span>`;
+document.getElementById("jump").innerHTML = CATS.map(c =>
+  `<a href="#${c.id}" style="--k:var(--${c.color})"><i></i>${esc(c.name)}</a>`).join("");
+
+function render() {
+  const term = document.getElementById("q").value.trim().toLowerCase();
+  const hit = t => !term || [t.name, t.desc, t.repo, t.badge || "", t.keys || "", ...(t.subs || [])].join(" ").toLowerCase().includes(term);
+  let html = "", n = 0;
+  for (const c of CATS) {
+    const list = TOOLS.filter(t => t.cat === c.id && hit(t));
+    if (!list.length) continue;
+    n += list.length;
+    html += `<section class="cat" id="${c.id}">
+      <div class="cat-h"><h2>${esc(c.name)}</h2><p>${esc(c.note)}</p><span>${list.length}</span></div>
+      <div class="list">${list.map(t => `
+        <a class="tool" href="${url(t)}" style="--k:var(--${t.color || c.color})">
+          <span class="ico">${svg(ICONS[t.icon] || ICONS.tool)}</span>
+          <span class="txt"><span class="name">${hl(t.name, term)}${t.badge ? `<small>${esc(t.badge)}</small>` : ""}</span>
+            <span class="desc">${hl(t.desc, term)}</span></span>
+          <span class="go">${ARROW}</span>
+          ${t.subs ? `<span class="subs">${t.subs.map(s => `<span>${hl(s, term)}</span>`).join("")}</span>` : ""}
+        </a>`).join("")}</div></section>`;
+  }
+  document.getElementById("main").innerHTML = n ? html : '<p class="none">找不到符合的工具，換個關鍵字試試。</p>';
+}
+document.getElementById("q").addEventListener("input", render);
+document.addEventListener("keydown", e => {
+  if (e.key === "/" && document.activeElement.tagName !== "INPUT") { e.preventDefault(); document.getElementById("q").focus(); }
+});
+render();
+
+// greeting + clock, from the viewer's own clock
+function tick() {
+  const d = new Date(), h = d.getHours();
+  const g = h < 5 ? "夜深了" : h < 11 ? "早安" : h < 14 ? "午安" : h < 18 ? "下午好" : "晚安";
+  document.getElementById("greet").innerHTML = `${g}，Liam<span class="dot">.</span>`;
+  document.getElementById("clock").textContent = d.toLocaleDateString("zh-TW", { month: "numeric", day: "numeric", weekday: "short" }) + " " +
+    String(h).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+}
+tick(); setInterval(tick, 30000);
 </script>
 </body>
 </html>
