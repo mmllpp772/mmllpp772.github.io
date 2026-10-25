@@ -1,0 +1,25 @@
+{
+ "name": "Liam 的工具板",
+ "short_name": "工具板",
+ "start_url": "./",
+ "display": "standalone",
+ "background_color": "#e9e4d8",
+ "theme_color": "#e9e4d8",
+ "icons": [
+  {
+   "src": "icon.svg",
+   "sizes": "any",
+   "type": "image/svg+xml"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-180.png",
+   "sizes": "180x180",
+   "type": "image/png"
+  }
+ ]
+}

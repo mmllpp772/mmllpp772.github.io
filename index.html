@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Liam 的工具板</title>
+<meta name="description" content="Liam 用 AI 做的小工具總入口：影像處理、直播地圖、3D 城市漫遊、迷因短片。">
+<meta name="theme-color" content="#e9e4d8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1b1a17" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-title" content="工具板">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Layout: a pegboard — tools hang as tags on a perforated board, grouped by shelf (category) */
+:root{
+  --board:#e9e4d8; --hole:#cfc7b5; --tag:#fffdf8; --ink:#22201b; --muted:#6e685c; --line:#d9d2c2;
+  --pin:#d1462f; --accent:#1f5e8c; --accent-ink:#ffffff;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --board:#1b1a17; --hole:#2c2a25; --tag:#262420; --ink:#ece7dc; --muted:#a39c8d; --line:#3a3731;
+  --pin:#f0735c; --accent:#7db7e3; --accent-ink:#0e1a24; color-scheme:dark}}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background-color:var(--board);color:var(--ink);font:15px/1.6 var(--f-body);
+  background-image:radial-gradient(circle,var(--hole) 2.4px,transparent 2.6px);background-size:22px 22px;background-position:11px 11px;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:1000px;margin:0 auto;padding-block:36px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:28px}
+header{background:var(--board);align-self:flex-start;padding:4px 8px 8px 0;border-radius:6px}
+h1{margin:0;font-weight:900;font-size:clamp(30px,7vw,44px);letter-spacing:.02em;line-height:1.15;text-wrap:balance}
+h1 small{display:block;font:500 12px/1.4 var(--f-mono);letter-spacing:.18em;color:var(--muted);margin-bottom:6px}
+.lede{margin:8px 0 0;color:var(--muted);max-width:34em}
+
+.find{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.find input{flex:1 1 220px;min-width:0;font:inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--tag);color:var(--ink)}
+.find input:focus-visible,.chip:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--tag);color:var(--muted);padding:6px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--board);border-color:var(--ink)}
+
+.shelf{display:flex;flex-direction:column;gap:12px}
+.shelf h2{margin:0;align-self:flex-start;background:var(--board);padding:2px 8px 2px 0;font:500 12px/1.4 var(--f-mono);letter-spacing:.18em;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+
+.tool{position:relative;background:var(--tag);border:1px solid var(--line);border-radius:12px;padding:22px 18px 16px;
+  display:flex;flex-direction:column;gap:10px;min-width:0;box-shadow:0 1px 0 rgba(0,0,0,.04),0 8px 18px -12px rgba(0,0,0,.35);
+  transform:rotate(var(--tilt,0deg));transition:transform .2s ease}
+.tool:hover{transform:rotate(0deg) translateY(-2px)}
+.tool::before{content:"";position:absolute;top:-6px;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;
+  background:var(--pin);box-shadow:0 2px 3px rgba(0,0,0,.3)}
+.top{display:flex;gap:12px;align-items:flex-start}
+.ico{flex:none;width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:var(--board);color:var(--ink)}
+.ico svg{width:24px;height:24px}
+.tool h3{margin:0;font-size:18px;font-weight:700;line-height:1.3}
+.tool p{margin:0;color:var(--muted);font-size:14px}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font:500 11px/1 var(--f-mono);letter-spacing:.06em;padding:5px 7px;border-radius:5px;border:1px solid var(--line);color:var(--muted)}
+.tag.lock{color:var(--pin);border-color:currentColor}
+.acts{display:flex;gap:10px;align-items:center;margin-top:auto;padding-top:4px}
+.open{flex:1;text-align:center;text-decoration:none;font-weight:700;background:var(--accent);color:var(--accent-ink);padding:10px 12px;border-radius:9px}
+.src{font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.empty{color:var(--muted);margin:0}
+footer{color:var(--muted);font-size:13px;background:var(--board);align-self:flex-start;padding:4px 8px 4px 0;border-radius:6px}
+footer p{margin:0 0 4px}
+@media (prefers-reduced-motion:reduce){.tool{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><small>MMLLPP772 · TOOLBOARD</small>Liam 的工具板</h1>
+    <p class="lede">用 AI 做的小工具都掛在這裡。點「打開」直接用，大部分都在你自己的裝置上處理，不會上傳資料。</p>
+  </header>
+
+  <div class="find">
+    <input id="q" type="search" placeholder="找工具，例如：去背、直播、3D" aria-label="搜尋工具">
+    <div class="chips" id="chips" role="group" aria-label="分類"></div>
+  </div>
+
+  <main id="board" style="display:flex;flex-direction:column;gap:28px"></main>
+
+  <footer>
+    <p>想加新工具：編輯 index.html 裡的 TOOLS 清單，加一筆就好。</p>
+    <p>原始碼：<a class="src" href="https://github.com/mmllpp772">github.com/mmllpp772</a></p>
+  </footer>
+</div>
+
+<script>
+// ---- the list: add a new tool here ----
+const TOOLS = [
+  { name: "影像工作台", repo: "image-tools", shelf: "影像與影片", icon: "scissors",
+    desc: "照片 AI 去背、影片臉部追蹤馬賽克、GoPro 影片瘦身，三合一。",
+    tags: ["去背", "馬賽克", "壓縮", "GoPro", "PNG"], added: "2026-10-25" },
+  { name: "喵股製片所", repo: "cat-stock-meme-studio", shelf: "影像與影片", icon: "cat",
+    desc: "上傳股票截圖或影片，配上貓貓動態模板和配樂，做成迷因短影片。",
+    tags: ["迷因", "股票", "短影片"], added: "2026-10-04" },
+  { name: "野生直播地圖", repo: "wildcams", shelf: "地圖與探索", icon: "globe",
+    desc: "全世界近 300 個動物直播的互動地圖，點地圖或清單就能看。",
+    tags: ["動物", "直播", "地圖"], added: "2026-10-25" },
+  { name: "竹北 3D 城市漫遊", repo: "zhubei-3d-Public-", shelf: "3D 漫遊", icon: "city",
+    desc: "瀏覽器就能玩的竹北 3D 沙盒：走路、騎車、開車、空拍、變成魚。",
+    tags: ["3D", "竹北", "遊戲"], added: "2026-10-16" },
+  { name: "廠區 3D 漫遊（內部版）", repo: "zhubei-3d", shelf: "3D 漫遊", icon: "factory",
+    desc: "加密頁面，打開後要輸入密碼才看得到內容。",
+    tags: ["3D", "需要密碼"], lock: true, added: "2026-10-22" },
+];
+
+const ICONS = {
+  scissors: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M8.1 7.9 20 20M8.1 16.1 20 4"/></svg>',
+  cat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 20V8l3-4 3 4h4l3-4 3 4v12z"/><circle cx="9" cy="13" r="1" fill="currentColor"/><circle cx="15" cy="13" r="1" fill="currentColor"/><path d="M11 16.5h2" stroke-linecap="round"/></svg>',
+  globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>',
+  city: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 21h18M5 21V9l5-3v15M10 21V3l7 4v14M19 21v-9"/><path d="M13 9h1M13 12h1M13 15h1" stroke-linecap="round"/></svg>',
+  factory: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 21V11l5 3v-3l5 3v-3l5 3V4h3v17z"/><path d="M7 18h2M12 18h2" stroke-linecap="round"/></svg>',
+  tool: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5"/></svg>',
+};
+const USER = "mmllpp772";
+const SHELF_ORDER = ["影像與影片", "地圖與探索", "3D 漫遊"];
+const url = t => t.url || `https://${USER}.github.io/${t.repo}/`;
+const src = t => `https://github.com/${USER}/${t.repo}`;
+
+const shelves = [...new Set([...SHELF_ORDER, ...TOOLS.map(t => t.shelf)])].filter(s => TOOLS.some(t => t.shelf === s));
+let active = "全部";
+const chips = document.getElementById("chips");
+["全部", ...shelves].forEach(s => {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "chip"; b.textContent = s;
+  b.setAttribute("aria-pressed", s === active);
+  b.onclick = () => { active = s; chips.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c.textContent === s)); render(); };
+  chips.appendChild(b);
+});
+const q = document.getElementById("q");
+q.addEventListener("input", render);
+
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+function render() {
+  const term = q.value.trim().toLowerCase();
+  const hit = t => !term || [t.name, t.desc, t.repo, ...(t.tags || [])].join(" ").toLowerCase().includes(term);
+  const board = document.getElementById("board");
+  board.innerHTML = "";
+  let n = 0, i = 0;
+  for (const s of shelves) {
+    if (active !== "全部" && active !== s) continue;
+    const list = TOOLS.filter(t => t.shelf === s && hit(t));
+    if (!list.length) continue;
+    const sec = document.createElement("section");
+    sec.className = "shelf";
+    sec.innerHTML = `<h2>${esc(s)}</h2><div class="grid"></div>`;
+    const grid = sec.querySelector(".grid");
+    for (const t of list) {
+      n++; i++;
+      const tilt = [-0.8, 0.6, -0.4, 0.9, -0.6][i % 5];
+      const el = document.createElement("article");
+      el.className = "tool"; el.style.setProperty("--tilt", tilt + "deg");
+      el.innerHTML = `
+        <div class="top"><div class="ico">${ICONS[t.icon] || ICONS.tool}</div>
+          <div><h3>${esc(t.name)}</h3><p>${esc(t.desc)}</p></div></div>
+        <div class="meta">${(t.tags || []).map(g => `<span class="tag${t.lock && g === "需要密碼" ? " lock" : ""}">${esc(g)}</span>`).join("")}</div>
+        <div class="acts"><a class="open" href="${url(t)}">打開</a><a class="src" href="${src(t)}">原始碼</a></div>`;
+      grid.appendChild(el);
+    }
+    board.appendChild(sec);
+  }
+  if (!n) board.innerHTML = '<p class="empty">找不到符合的工具，換個關鍵字試試。</p>';
+}
+render();
+</script>
+</body>
+</html>
