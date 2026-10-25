@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Liam 的工具箱</title>
-<meta name="description" content="Liam 用 AI 做的小工具：照片去背與影片處理、動物直播地圖、迷因短片、3D 漫遊。">
+<title>Liam Chiu · Projects</title>
+<meta name="description" content="Liam Chiu 的作品集：影像與影片處理、辦公效率工具、互動地圖與 3D 場景，全部可在瀏覽器直接使用。">
 <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0d0f12" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
@@ -122,9 +122,8 @@ footer a{color:inherit;text-underline-offset:3px}
 <body>
 <div class="wrap">
   <header class="mast">
-    <div class="who"><i></i>Liam Chiu · Toolbox</div>
+    <div class="who"><i></i>Liam Chiu · Projects</div>
     <h1><span class="nb">把想法，</span><br><span class="nb">做成<em>能用</em>的小工具。</span></h1>
-    <p class="lede">這裡收著我用 AI 做的工具。點卡片就能直接用，照片和影片都在你自己的裝置上處理，不會上傳。</p>
     <div class="stats" id="stats"></div>
     <nav class="jump" id="jump" aria-label="分類"></nav>
   </header>
@@ -132,7 +131,7 @@ footer a{color:inherit;text-underline-offset:3px}
   <main id="main"></main>
 
   <footer>
-    <span>持續更新中，做了新工具就掛上來。</span>
+    <span>© <span id="yr">2026</span> Liam Chiu</span>
     <a href="https://github.com/mmllpp772">github.com/mmllpp772</a>
   </footer>
 </div>
@@ -163,7 +162,7 @@ const TOOLS = [
     desc: "上傳股票截圖或影片，配上貓貓動態模板和配樂，做成迷因短影片。",
     tags: ["迷因", "股票", "短影片"] },
   { cat: "3d", name: "廠區 3D 漫遊", repo: "zhubei-3d", cover: "iso", color: "c4",
-    desc: "內部版 3D 場景。內容已加密，打開後輸入密碼才看得到。",
+    desc: "內部專案的 3D 場景，內容經加密保護，需授權密碼才能開啟。",
     tags: ["3D", "內部"], badge: "需要密碼" },
 ];
 
@@ -267,7 +266,8 @@ document.getElementById("main").innerHTML = CATS.map(c => {
 }).join("");
 document.getElementById("jump").innerHTML = CATS.filter(c => TOOLS.some(t => t.cat === c.id)).map(c =>
   `<a href="#${c.id}" style="--k:var(--${c.color}i)"><i></i>${esc(c.name)}</a>`).join("");
-document.getElementById("stats").innerHTML = `<span><b>${TOOLS.length}</b> 個工具</span><span>全部免安裝，打開就能用</span>`;
+document.getElementById("stats").innerHTML = `<span><b>${TOOLS.length}</b> 項作品</span><span><b>${CATS.length}</b> 個領域</span><span>瀏覽器端執行・資料不離開裝置</span>`;
+document.getElementById("yr").textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
