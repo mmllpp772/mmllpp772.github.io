@@ -23,6 +23,8 @@
   --c2:#f8e7cf; --c2i:#b4660f;   /* meme: amber */
   --c3:#d5ece7; --c3i:#13756a;   /* wildcams: teal */
   --c4:#dfe3ea; --c4i:#3c4a60;   /* 3d: slate */
+  --c5:#dbe7f8; --c5i:#22589e;   /* office: blue */
+  --c6:#f6dfe4; --c6i:#a8344f;   /* flow: rose */
   --live:#e5483a;
   --f-display:"Noto Serif TC","Songti TC",serif;
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
@@ -36,6 +38,8 @@
   --c2:#352a1b; --c2i:#f2b465;
   --c3:#16302c; --c3i:#6fd3c1;
   --c4:#20262f; --c4i:#a9b6ca;
+  --c5:#172538; --c5i:#8db8f2;
+  --c6:#341b22; --c6i:#f29bb0;
   --live:#ff6b5e; color-scheme:dark}}
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -81,6 +85,7 @@ h1 em{font-style:normal;color:var(--accent)}
 
 .tool.c1{--c:var(--c1);--ci:var(--c1i)} .tool.c2{--c:var(--c2);--ci:var(--c2i)}
 .tool.c3{--c:var(--c3);--ci:var(--c3i)} .tool.c4{--c:var(--c4);--ci:var(--c4i)}
+.tool.c5{--c:var(--c5);--ci:var(--c5i)} .tool.c6{--c:var(--c6);--ci:var(--c6i)}
 
 footer{margin-top:clamp(48px,7vw,80px);padding-top:22px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;
   color:var(--muted);font-size:13px}
@@ -111,6 +116,12 @@ const TOOLS = [
   { name: "影像工作台", repo: "image-tools", cover: "cutout", color: "c1",
     desc: "照片 AI 去背、影片臉部追蹤馬賽克、影片轉 GIF、GoPro 影片瘦身，四個工具在同一頁。",
     tags: ["去背", "馬賽克", "GIF", "影片壓縮"], badge: "四合一" },
+  { name: "流程繪", repo: "flowforge", cover: "flow", color: "c6",
+    desc: "拖拉式畫流程圖：新增節點、拉連線、調整樣式與對齊，規劃或說明流程一次搞定。",
+    tags: ["流程圖", "拖拉", "離線"] },
+  { name: "辦公工具箱", repo: "office-tools", cover: "office", color: "c5",
+    desc: "PDF 合併、分割、浮水印、轉圖片，加上 QR 碼與條碼產生器，檔案都不上傳。",
+    tags: ["PDF", "QR", "條碼"], badge: "2 個工具" },
   { name: "野生直播地圖", repo: "wildcams", cover: "globe", color: "c3",
     desc: "全世界近 300 個動物直播的互動地圖，點地圖或清單就能看。",
     tags: ["動物", "直播", "地圖"], badge: "LIVE", live: true },
@@ -130,6 +141,34 @@ const COVERS = {
     <path d="M160 200c0-46 18-70 40-80-14-8-22-22-22-40 0-26 20-44 44-44s44 18 44 44c0 18-8 32-22 40 22 10 40 34 40 80z" fill="currentColor" opacity=".9"/>
     <path d="M60 200c0-46 18-70 40-80-14-8-22-22-22-40 0-26 20-44 44-44" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 7" opacity=".55"/>
     <g transform="translate(118 26) rotate(28)" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="0" cy="0" r="7"/><circle cx="0" cy="22" r="7"/><path d="M5 5l24 22M5 17l24-22"/></g>
+  </svg>`,
+  // nodes and arrows
+  flow: `<svg viewBox="0 0 320 200" aria-hidden="true">
+    <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M112 64h40M196 64h0" opacity=".6"/><path d="M174 82v26M174 140v14M152 124h-34v-12" opacity=".6"/>
+      <path d="M148 60l6 4-6 4M170 104l4 6 4-6M114 116l4-6 4 6" opacity=".6"/>
+    </g>
+    <rect x="52" y="48" width="60" height="32" rx="16" fill="currentColor" opacity=".45"/>
+    <rect x="152" y="48" width="44" height="32" rx="6" fill="currentColor" opacity=".7"/>
+    <path d="M174 110l24 15-24 15-24-15z" fill="currentColor"/>
+    <rect x="88" y="80" width="58" height="30" rx="6" fill="currentColor" opacity=".35"/>
+    <rect x="148" y="154" width="52" height="26" rx="13" fill="currentColor" opacity=".55"/>
+    <path d="M226 64h40" stroke="currentColor" stroke-width="2.5" stroke-dasharray="4 6" stroke-linecap="round" opacity=".5"/>
+    <circle cx="276" cy="64" r="8" fill="currentColor" opacity=".5"/>
+  </svg>`,
+  // a document with a QR code stamped on it
+  office: `<svg viewBox="0 0 320 200" aria-hidden="true">
+    <g fill="var(--card)" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+      <path d="M96 46h62l20 20v104H96z" transform="rotate(-6 137 108)" opacity=".6"/>
+      <path d="M120 34h64l22 22v112h-86z"/><path d="M184 34v22h22" fill="none"/>
+    </g>
+    <g stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".6"><path d="M134 76h50M134 92h50M134 108h30"/></g>
+    <g fill="currentColor" transform="translate(184 116)">
+      <rect width="56" height="56" rx="6" fill="currentColor"/>
+      <g fill="var(--c)"><path d="M6 6h16v16H6zM34 6h16v16H34zM6 34h16v16H6z"/></g>
+      <g fill="currentColor"><rect x="10" y="10" width="8" height="8"/><rect x="38" y="10" width="8" height="8"/><rect x="10" y="38" width="8" height="8"/></g>
+      <g fill="var(--c)"><rect x="30" y="30" width="6" height="6"/><rect x="40" y="36" width="6" height="6"/><rect x="32" y="44" width="6" height="6"/><rect x="44" y="46" width="6" height="6"/></g>
+    </g>
   </svg>`,
   // dotted globe with live pins
   globe: `<svg viewBox="0 0 320 200" aria-hidden="true">
