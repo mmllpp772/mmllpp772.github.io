@@ -3,174 +3,190 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Liam 的工具板</title>
-<meta name="description" content="Liam 用 AI 做的小工具總入口：影像處理、直播地圖、3D 城市漫遊、迷因短片。">
-<meta name="theme-color" content="#e9e4d8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1b1a17" media="(prefers-color-scheme: dark)">
+<title>Liam 的工具箱</title>
+<meta name="description" content="Liam 用 AI 做的小工具：照片去背與影片處理、動物直播地圖、迷因短片、3D 漫遊。">
+<meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0f12" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
-<meta name="apple-mobile-web-app-title" content="工具板">
+<meta name="apple-mobile-web-app-title" content="工具箱">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-/* Layout: a pegboard — tools hang as tags on a perforated board, grouped by shelf (category) */
+/* Layout: a quiet gallery — big serif masthead, then a 2-up grid of tool cards, each with its own drawn cover */
 :root{
-  --board:#e9e4d8; --hole:#cfc7b5; --tag:#fffdf8; --ink:#22201b; --muted:#6e685c; --line:#d9d2c2;
-  --pin:#d1462f; --accent:#1f5e8c; --accent-ink:#ffffff;
+  --bg:#eceef1; --card:#ffffff; --ink:#101318; --muted:#5d6470; --line:#d8dce2; --soft:#f5f6f8;
+  --accent:#2f4bd6; --accent-ink:#ffffff;
+  --c1:#e7e2f7; --c1i:#5b45c2;   /* image tools: violet */
+  --c2:#f8e7cf; --c2i:#b4660f;   /* meme: amber */
+  --c3:#d5ece7; --c3i:#13756a;   /* wildcams: teal */
+  --c4:#dfe3ea; --c4i:#3c4a60;   /* 3d: slate */
+  --live:#e5483a;
+  --f-display:"Noto Serif TC","Songti TC",serif;
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root{
-  --board:#1b1a17; --hole:#2c2a25; --tag:#262420; --ink:#ece7dc; --muted:#a39c8d; --line:#3a3731;
-  --pin:#f0735c; --accent:#7db7e3; --accent-ink:#0e1a24; color-scheme:dark}}
+  --bg:#0d0f12; --card:#16191e; --ink:#eef0f3; --muted:#9aa2ae; --line:#272b32; --soft:#1c2026;
+  --accent:#8fa2ff; --accent-ink:#0b1030;
+  --c1:#26213a; --c1i:#b7a8ff;
+  --c2:#352a1b; --c2i:#f2b465;
+  --c3:#16302c; --c3i:#6fd3c1;
+  --c4:#20262f; --c4i:#a9b6ca;
+  --live:#ff6b5e; color-scheme:dark}}
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background-color:var(--board);color:var(--ink);font:15px/1.6 var(--f-body);
-  background-image:radial-gradient(circle,var(--hole) 2.4px,transparent 2.6px);background-size:22px 22px;background-position:11px 11px;
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--f-body);-webkit-font-smoothing:antialiased;
   padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.wrap{max-width:1000px;margin:0 auto;padding-block:36px 56px;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  display:flex;flex-direction:column;gap:28px}
-header{background:var(--board);align-self:flex-start;padding:4px 8px 8px 0;border-radius:6px}
-h1{margin:0;font-weight:900;font-size:clamp(30px,7vw,44px);letter-spacing:.02em;line-height:1.15;text-wrap:balance}
-h1 small{display:block;font:500 12px/1.4 var(--f-mono);letter-spacing:.18em;color:var(--muted);margin-bottom:6px}
-.lede{margin:8px 0 0;color:var(--muted);max-width:34em}
+.wrap{max-width:1080px;margin:0 auto;padding-block:clamp(40px,8vw,88px) 64px;
+  padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
 
-.find{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.find input{flex:1 1 220px;min-width:0;font:inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--tag);color:var(--ink)}
-.find input:focus-visible,.chip:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--tag);color:var(--muted);padding:6px 12px;border-radius:999px;cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--board);border-color:var(--ink)}
+/* masthead */
+.mast{display:grid;gap:18px;margin-bottom:clamp(36px,6vw,64px)}
+.who{display:flex;align-items:center;gap:10px;font:500 12px/1 var(--f-mono);letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.who i{width:28px;height:1px;background:currentColor;display:block}
+h1{margin:0;font-family:var(--f-display);font-weight:900;font-size:clamp(40px,9vw,84px);line-height:1.08;letter-spacing:.01em;text-wrap:balance}
+h1 em{font-style:normal;color:var(--accent)}
+.nb{white-space:nowrap}
+@media (max-width:420px){h1{font-size:clamp(32px,10.2vw,44px)}}
+.lede{margin:0;max-width:30em;color:var(--muted);font-size:clamp(15px,2.2vw,17px)}
+.stats{display:flex;flex-wrap:wrap;gap:8px 22px;font:500 12px/1.4 var(--f-mono);letter-spacing:.06em;color:var(--muted)}
+.stats b{color:var(--ink);font-weight:500}
 
-.shelf{display:flex;flex-direction:column;gap:12px}
-.shelf h2{margin:0;align-self:flex-start;background:var(--board);padding:2px 8px 2px 0;font:500 12px/1.4 var(--f-mono);letter-spacing:.18em;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.4vw,28px)}
+@media (max-width:720px){.grid{grid-template-columns:minmax(0,1fr)}}
+.tool{--c:var(--c4);--ci:var(--c4i);position:relative;display:flex;flex-direction:column;background:var(--card);border-radius:22px;overflow:hidden;
+  text-decoration:none;color:inherit;border:1px solid var(--line);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+.tool:hover{transform:translateY(-4px);box-shadow:0 22px 40px -24px rgba(16,19,24,.45)}
+.tool:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.cover{position:relative;aspect-ratio:16/10;background:var(--c);color:var(--ci);overflow:hidden}
+.cover svg{position:absolute;inset:0;width:100%;height:100%}
+.badge{position:absolute;top:16px;left:16px;font:500 11px/1 var(--f-mono);letter-spacing:.08em;padding:7px 10px;border-radius:999px;background:var(--card);color:var(--ink)}
+.badge.live{display:flex;align-items:center;gap:6px}
+.badge.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--live);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+.body{display:flex;flex-direction:column;gap:10px;padding:22px 24px 24px;flex:1}
+.body h2{margin:0;font-family:var(--f-display);font-weight:900;font-size:clamp(22px,3vw,28px);line-height:1.25}
+.body p{margin:0;color:var(--muted);font-size:15px;max-width:34em}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:10px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-size:12px;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--muted)}
+.go{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:var(--bg);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.tool:hover .go{transform:translateX(3px) rotate(-45deg)}
+.go svg{width:18px;height:18px}
 
-.tool{position:relative;background:var(--tag);border:1px solid var(--line);border-radius:12px;padding:22px 18px 16px;
-  display:flex;flex-direction:column;gap:10px;min-width:0;box-shadow:0 1px 0 rgba(0,0,0,.04),0 8px 18px -12px rgba(0,0,0,.35);
-  transform:rotate(var(--tilt,0deg));transition:transform .2s ease}
-.tool:hover{transform:rotate(0deg) translateY(-2px)}
-.tool::before{content:"";position:absolute;top:-6px;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;
-  background:var(--pin);box-shadow:0 2px 3px rgba(0,0,0,.3)}
-.top{display:flex;gap:12px;align-items:flex-start}
-.ico{flex:none;width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:var(--board);color:var(--ink)}
-.ico svg{width:24px;height:24px}
-.tool h3{margin:0;font-size:18px;font-weight:700;line-height:1.3}
-.tool p{margin:0;color:var(--muted);font-size:14px}
-.meta{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font:500 11px/1 var(--f-mono);letter-spacing:.06em;padding:5px 7px;border-radius:5px;border:1px solid var(--line);color:var(--muted)}
-.tag.lock{color:var(--pin);border-color:currentColor}
-.acts{display:flex;gap:10px;align-items:center;margin-top:auto;padding-top:4px}
-.open{flex:1;text-align:center;text-decoration:none;font-weight:700;background:var(--accent);color:var(--accent-ink);padding:10px 12px;border-radius:9px}
-.src{font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
-.empty{color:var(--muted);margin:0}
-footer{color:var(--muted);font-size:13px;background:var(--board);align-self:flex-start;padding:4px 8px 4px 0;border-radius:6px}
-footer p{margin:0 0 4px}
-@media (prefers-reduced-motion:reduce){.tool{transition:none}}
+.tool.c1{--c:var(--c1);--ci:var(--c1i)} .tool.c2{--c:var(--c2);--ci:var(--c2i)}
+.tool.c3{--c:var(--c3);--ci:var(--c3i)} .tool.c4{--c:var(--c4);--ci:var(--c4i)}
+
+footer{margin-top:clamp(48px,7vw,80px);padding-top:22px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;
+  color:var(--muted);font-size:13px}
+footer a{color:inherit;text-underline-offset:3px}
+@media (prefers-reduced-motion:reduce){.tool,.go{transition:none}.badge.live::before{animation:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1><small>MMLLPP772 · TOOLBOARD</small>Liam 的工具板</h1>
-    <p class="lede">用 AI 做的小工具都掛在這裡。點「打開」直接用，大部分都在你自己的裝置上處理，不會上傳資料。</p>
+  <header class="mast">
+    <div class="who"><i></i>Liam Chiu · Toolbox</div>
+    <h1><span class="nb">把想法，</span><br><span class="nb">做成<em>能用</em>的小工具。</span></h1>
+    <p class="lede">這裡收著我用 AI 做的工具。點卡片就能直接用，照片和影片都在你自己的裝置上處理，不會上傳。</p>
+    <div class="stats" id="stats"></div>
   </header>
 
-  <div class="find">
-    <input id="q" type="search" placeholder="找工具，例如：去背、直播、3D" aria-label="搜尋工具">
-    <div class="chips" id="chips" role="group" aria-label="分類"></div>
-  </div>
-
-  <main id="board" style="display:flex;flex-direction:column;gap:28px"></main>
+  <main class="grid" id="grid"></main>
 
   <footer>
-    <p>想加新工具：編輯 index.html 裡的 TOOLS 清單，加一筆就好。</p>
-    <p>原始碼：<a class="src" href="https://github.com/mmllpp772">github.com/mmllpp772</a></p>
+    <span>持續更新中，做了新工具就掛上來。</span>
+    <a href="https://github.com/mmllpp772">github.com/mmllpp772</a>
   </footer>
 </div>
 
 <script>
-// ---- the list: add a new tool here ----
+// ---- 工具清單：新增工具就在這裡加一筆 ----
 const TOOLS = [
-  { name: "影像工作台", repo: "image-tools", shelf: "影像與影片", icon: "scissors",
-    desc: "照片 AI 去背、影片臉部追蹤馬賽克、GoPro 影片瘦身，三合一。",
-    tags: ["去背", "馬賽克", "壓縮", "GoPro", "PNG"], added: "2026-10-25" },
-  { name: "喵股製片所", repo: "cat-stock-meme-studio", shelf: "影像與影片", icon: "cat",
-    desc: "上傳股票截圖或影片，配上貓貓動態模板和配樂，做成迷因短影片。",
-    tags: ["迷因", "股票", "短影片"], added: "2026-10-04" },
-  { name: "野生直播地圖", repo: "wildcams", shelf: "地圖與探索", icon: "globe",
+  { name: "影像工作台", repo: "image-tools", cover: "cutout", color: "c1",
+    desc: "照片 AI 去背、影片臉部追蹤馬賽克、GoPro 影片瘦身，三個工具在同一頁。",
+    tags: ["去背", "馬賽克", "影片壓縮"], badge: "三合一" },
+  { name: "野生直播地圖", repo: "wildcams", cover: "globe", color: "c3",
     desc: "全世界近 300 個動物直播的互動地圖，點地圖或清單就能看。",
-    tags: ["動物", "直播", "地圖"], added: "2026-10-25" },
-  { name: "竹北 3D 城市漫遊", repo: "zhubei-3d-Public-", shelf: "3D 漫遊", icon: "city",
-    desc: "瀏覽器就能玩的竹北 3D 沙盒：走路、騎車、開車、空拍、變成魚。",
-    tags: ["3D", "竹北", "遊戲"], added: "2026-10-16" },
-  { name: "廠區 3D 漫遊（內部版）", repo: "zhubei-3d", shelf: "3D 漫遊", icon: "factory",
-    desc: "加密頁面，打開後要輸入密碼才看得到內容。",
-    tags: ["3D", "需要密碼"], lock: true, added: "2026-10-22" },
+    tags: ["動物", "直播", "地圖"], badge: "LIVE", live: true },
+  { name: "喵股製片所", repo: "cat-stock-meme-studio", cover: "cat", color: "c2",
+    desc: "上傳股票截圖或影片，配上貓貓動態模板和配樂，做成迷因短影片。",
+    tags: ["迷因", "股票", "短影片"] },
+  { name: "廠區 3D 漫遊", repo: "zhubei-3d", cover: "iso", color: "c4",
+    desc: "內部版 3D 場景。內容已加密，打開後輸入密碼才看得到。",
+    tags: ["3D", "內部"], badge: "需要密碼" },
 ];
 
-const ICONS = {
-  scissors: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M8.1 7.9 20 20M8.1 16.1 20 4"/></svg>',
-  cat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 20V8l3-4 3 4h4l3-4 3 4v12z"/><circle cx="9" cy="13" r="1" fill="currentColor"/><circle cx="15" cy="13" r="1" fill="currentColor"/><path d="M11 16.5h2" stroke-linecap="round"/></svg>',
-  globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>',
-  city: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 21h18M5 21V9l5-3v15M10 21V3l7 4v14M19 21v-9"/><path d="M13 9h1M13 12h1M13 15h1" stroke-linecap="round"/></svg>',
-  factory: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 21V11l5 3v-3l5 3v-3l5 3V4h3v17z"/><path d="M7 18h2M12 18h2" stroke-linecap="round"/></svg>',
-  tool: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5"/></svg>',
+const COVERS = {
+  // transparent-checker board with a subject being cut out along a dashed path
+  cutout: `<svg viewBox="0 0 320 200" aria-hidden="true">
+    <defs><pattern id="ck" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="currentColor" opacity=".06"/><rect width="8" height="8" fill="currentColor" opacity=".12"/><rect x="8" y="8" width="8" height="8" fill="currentColor" opacity=".12"/></pattern></defs>
+    <rect x="150" y="0" width="170" height="200" fill="url(#ck)"/>
+    <path d="M160 200c0-46 18-70 40-80-14-8-22-22-22-40 0-26 20-44 44-44s44 18 44 44c0 18-8 32-22 40 22 10 40 34 40 80z" fill="currentColor" opacity=".9"/>
+    <path d="M60 200c0-46 18-70 40-80-14-8-22-22-22-40 0-26 20-44 44-44" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 7" opacity=".55"/>
+    <g transform="translate(118 26) rotate(28)" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="0" cy="0" r="7"/><circle cx="0" cy="22" r="7"/><path d="M5 5l24 22M5 17l24-22"/></g>
+  </svg>`,
+  // dotted globe with live pins
+  globe: `<svg viewBox="0 0 320 200" aria-hidden="true">
+    <g transform="translate(160 112)">
+      <circle r="78" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35"/>
+      <ellipse rx="78" ry="26" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".25"/>
+      <ellipse rx="78" ry="56" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".18"/>
+      <ellipse rx="30" ry="78" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".25"/>
+      <ellipse rx="60" ry="78" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".18"/>
+      <g fill="currentColor"><circle cx="-38" cy="-30" r="5"/><circle cx="22" cy="-48" r="5"/><circle cx="46" cy="8" r="5"/><circle cx="-12" cy="30" r="5"/><circle cx="-54" cy="18" r="5"/></g>
+      <g fill="none" stroke="currentColor" stroke-width="1.5" opacity=".5"><circle cx="22" cy="-48" r="11"/><circle cx="46" cy="8" r="11"/></g>
+    </g>
+  </svg>`,
+  // candlestick chart wearing cat ears
+  cat: `<svg viewBox="0 0 320 200" aria-hidden="true">
+    <g stroke="currentColor" stroke-width="2" opacity=".35"><path d="M40 170h240"/></g>
+    <g fill="currentColor">
+      <rect x="62" y="110" width="16" height="40" rx="2" opacity=".45"/><path d="M70 98v64" stroke="currentColor" stroke-width="2" opacity=".45"/>
+      <rect x="98" y="96" width="16" height="34" rx="2" opacity=".45"/><path d="M106 86v54" stroke="currentColor" stroke-width="2" opacity=".45"/>
+      <rect x="134" y="104" width="16" height="30" rx="2" opacity=".45"/><path d="M142 94v48" stroke="currentColor" stroke-width="2" opacity=".45"/>
+      <rect x="170" y="76" width="16" height="42" rx="2" opacity=".7"/><path d="M178 66v60" stroke="currentColor" stroke-width="2" opacity=".7"/>
+      <rect x="206" y="58" width="16" height="36" rx="2"/><path d="M214 48v54" stroke="currentColor" stroke-width="2"/>
+    </g>
+    <path d="M60 150 106 118 142 124 178 92 238 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <g transform="translate(238 48)" fill="currentColor"><circle r="22"/><path d="M-20 -8-16-34 0-18zM20 -8 16-34 0-18z"/></g>
+    <g transform="translate(238 48)" fill="var(--c)"><circle cx="-8" cy="-2" r="3"/><circle cx="8" cy="-2" r="3"/><path d="M-4 8h8l-4 4z"/></g>
+  </svg>`,
+  // isometric blocks with a padlock
+  iso: `<svg viewBox="0 0 320 200" aria-hidden="true">
+    <g stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+      <path d="M110 140 150 120 190 140 150 160z" fill="currentColor" fill-opacity=".15"/>
+      <path d="M110 140v-56l40-20v56z" fill="currentColor" fill-opacity=".35"/>
+      <path d="M150 120V64l40 20v56z" fill="currentColor" fill-opacity=".55"/>
+      <path d="M110 84 150 64 190 84 150 104z" fill="currentColor" fill-opacity=".25"/>
+      <path d="M196 156v-30l26-13v30z" fill="currentColor" fill-opacity=".35"/>
+      <path d="M222 143v-30l26 13v30z" fill="currentColor" fill-opacity=".55"/>
+      <path d="M196 126 222 113 248 126 222 139z" fill="currentColor" fill-opacity=".25"/>
+      <path d="M70 146v-22l20-10v22z" fill="currentColor" fill-opacity=".35"/>
+      <path d="M90 136v-22l20 10v22z" fill="currentColor" fill-opacity=".55"/>
+    </g>
+    <g transform="translate(150 40)" fill="none" stroke="currentColor" stroke-width="3"><path d="M-9 0v-8a9 9 0 0 1 18 0v8"/><rect x="-13" y="0" width="26" height="20" rx="4" fill="currentColor"/></g>
+  </svg>`,
 };
+const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 const USER = "mmllpp772";
-const SHELF_ORDER = ["影像與影片", "地圖與探索", "3D 漫遊"];
-const url = t => t.url || `https://${USER}.github.io/${t.repo}/`;
-const src = t => `https://github.com/${USER}/${t.repo}`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-const shelves = [...new Set([...SHELF_ORDER, ...TOOLS.map(t => t.shelf)])].filter(s => TOOLS.some(t => t.shelf === s));
-let active = "全部";
-const chips = document.getElementById("chips");
-["全部", ...shelves].forEach(s => {
-  const b = document.createElement("button");
-  b.type = "button"; b.className = "chip"; b.textContent = s;
-  b.setAttribute("aria-pressed", s === active);
-  b.onclick = () => { active = s; chips.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c.textContent === s)); render(); };
-  chips.appendChild(b);
-});
-const q = document.getElementById("q");
-q.addEventListener("input", render);
-
-function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
-function render() {
-  const term = q.value.trim().toLowerCase();
-  const hit = t => !term || [t.name, t.desc, t.repo, ...(t.tags || [])].join(" ").toLowerCase().includes(term);
-  const board = document.getElementById("board");
-  board.innerHTML = "";
-  let n = 0, i = 0;
-  for (const s of shelves) {
-    if (active !== "全部" && active !== s) continue;
-    const list = TOOLS.filter(t => t.shelf === s && hit(t));
-    if (!list.length) continue;
-    const sec = document.createElement("section");
-    sec.className = "shelf";
-    sec.innerHTML = `<h2>${esc(s)}</h2><div class="grid"></div>`;
-    const grid = sec.querySelector(".grid");
-    for (const t of list) {
-      n++; i++;
-      const tilt = [-0.8, 0.6, -0.4, 0.9, -0.6][i % 5];
-      const el = document.createElement("article");
-      el.className = "tool"; el.style.setProperty("--tilt", tilt + "deg");
-      el.innerHTML = `
-        <div class="top"><div class="ico">${ICONS[t.icon] || ICONS.tool}</div>
-          <div><h3>${esc(t.name)}</h3><p>${esc(t.desc)}</p></div></div>
-        <div class="meta">${(t.tags || []).map(g => `<span class="tag${t.lock && g === "需要密碼" ? " lock" : ""}">${esc(g)}</span>`).join("")}</div>
-        <div class="acts"><a class="open" href="${url(t)}">打開</a><a class="src" href="${src(t)}">原始碼</a></div>`;
-      grid.appendChild(el);
-    }
-    board.appendChild(sec);
-  }
-  if (!n) board.innerHTML = '<p class="empty">找不到符合的工具，換個關鍵字試試。</p>';
-}
-render();
+document.getElementById("grid").innerHTML = TOOLS.map(t => `
+  <a class="tool ${t.color || ""}" href="${t.url || `https://${USER}.github.io/${t.repo}/`}">
+    <div class="cover">${COVERS[t.cover] || ""}${t.badge ? `<span class="badge${t.live ? " live" : ""}">${esc(t.badge)}</span>` : ""}</div>
+    <div class="body">
+      <h2>${esc(t.name)}</h2>
+      <p>${esc(t.desc)}</p>
+      <div class="foot"><div class="tags">${t.tags.map(g => `<span>${esc(g)}</span>`).join("")}</div><span class="go">${ARROW}</span></div>
+    </div>
+  </a>`).join("");
+document.getElementById("stats").innerHTML = `<span><b>${TOOLS.length}</b> 個工具</span><span>全部免安裝，打開就能用</span>`;
 </script>
 </body>
 </html>

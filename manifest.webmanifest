@@ -1,10 +1,10 @@
 {
- "name": "Liam 的工具板",
- "short_name": "工具板",
+ "name": "Liam 的工具箱",
+ "short_name": "工具箱",
  "start_url": "./",
  "display": "standalone",
- "background_color": "#e9e4d8",
- "theme_color": "#e9e4d8",
+ "background_color": "#eceef1",
+ "theme_color": "#eceef1",
  "icons": [
   {
    "src": "icon.svg",
